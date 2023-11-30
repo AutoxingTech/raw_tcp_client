@@ -68,7 +68,6 @@ private:
     } m_buffer;
 };
 
-
 int main()
 {
     // -1, 2, -3: 57 54 53 54 06 00 04 56 18 fc d0 07 d4 fe
