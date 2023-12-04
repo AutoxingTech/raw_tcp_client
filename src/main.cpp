@@ -1,9 +1,16 @@
 #include <iostream>
+#include <cmath>
 
-using namespace std;
+#include "tcp_messages/message_wrapper.h"
 
-void printBuffer(const uint8_t* p, size_t length)
+#include "tcp_messages/CustomMsgArray.h"
+#include "tcp_messages/WheelState.h"
+
+using namespace ax;
+
+inline void print_buffer(const void* buffer, size_t length)
 {
+    const uint8_t* p = (const uint8_t*)buffer;
     for (size_t i = 0; i < length; i++)
     {
         printf("%02x ", p[i]);
@@ -11,68 +18,47 @@ void printBuffer(const uint8_t* p, size_t length)
     printf("\n");
 }
 
-/// CRC-16 x16+x15+x2+1  <==> 0x8005
-uint16_t calculateCRC16(const uint8_t* p, int len)
+void test_custom_msg()
 {
-    uint16_t crc = 0xffff;            /// init value
-    const uint16_t CRC_MASK = 0xA001; /// high and low bit flipping of '0x8005'
-    int i, j;
-    for (j = 0; j < len; j++)
+    CustomMsgArray msg;
+    msg.msgs[0] = CustomMsg("aaaa", 0.1, 0.2, 5 * M_PI / 180);
+    msg.msgs[1] = CustomMsg("bbbbbbbb", 0.1, 0.2, 5 * M_PI / 180);
+
+    std::vector<char> buffer;
+    to_buffer(msg, "AB", buffer);
+
+    print_buffer(&buffer[0], buffer.size());
+
+    CustomMsgArray msg2;
+    if (from_buffer(msg2, "AB", &buffer[0], buffer.size()))
     {
-        crc ^= p[j];
-        for (i = 0; i < 8; i++)
-        {
-            if ((crc & 0x0001) > 0)
-            {
-                crc = (crc >> 1) ^ CRC_MASK;
-            }
-            else
-            {
-                crc >>= 1;
-            }
-        }
+        std::cout << msg2.msgs[0] << std::endl;
+        std::cout << msg2.msgs[1] << std::endl;
     }
-    return crc;
 }
 
-struct __attribute__((packed)) WheelControlTwist
+void test_wheel_state()
 {
-    WheelControlTwist(int16_t linear_velocity_x, int16_t linear_velocity_y, int16_t angular_velocity)
-    {
-        m_bufferLength = sizeof(m_buffer);
-        size_t dataSize = m_bufferLength - sizeof(m_buffer.header) - sizeof(m_buffer.length) - sizeof(m_buffer.crc);
+    WheelState msg;
+    msg.enable_state = WheelControlEnableState::ENABLED;
+    msg.wheel_error_msg = "abc";
 
-        m_buffer.length = (uint16_t)dataSize;
-        m_buffer.linear_velocity_x = linear_velocity_x * 1000;
-        m_buffer.linear_velocity_y = linear_velocity_y * 1000;
-        m_buffer.angular_velocity = angular_velocity * 100;
-        m_buffer.crc = calculateCRC16((const uint8_t*)(&m_buffer.linear_velocity_x), dataSize);
+    std::vector<char> buffer;
+    to_buffer(msg, "AB", buffer);
+    print_buffer(&buffer[0], buffer.size());
+
+    WheelState msg2;
+    if (from_buffer(msg2, "AB", &buffer[0], buffer.size()))
+    {
+        std::cout << msg2.enable_state << std::endl;
+        std::cout << msg2.wheel_error_msg << std::endl;
     }
-
-    void* buffer() { return &m_buffer; }
-    size_t bufferLength() const { return m_bufferLength; }
-
-private:
-    size_t m_bufferLength;
-    static const int m_dataMaxSize = 10;
-
-    // binary buffer
-    struct __attribute__((packed))
-    {
-        const uint8_t header[4]{'W', 'T', 'S', 'T'};
-        uint16_t length;
-        uint16_t crc;
-        int16_t linear_velocity_x;
-        int16_t linear_velocity_y;
-        int16_t angular_velocity;
-    } m_buffer;
-};
+}
 
 int main()
 {
-    // -1, 2, -3: 57 54 53 54 06 00 04 56 18 fc d0 07 d4 fe
-    WheelControlTwist twist(-1, 2, -3);
-    printBuffer((const uint8_t*)twist.buffer(), twist.bufferLength());
+    test_custom_msg();
+    test_wheel_state();
 
     return 0;
 }
