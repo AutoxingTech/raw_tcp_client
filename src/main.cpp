@@ -5,6 +5,7 @@
 
 #include "port_msgs/CustomMsgArray.h"
 #include "port_msgs/WheelState.h"
+#include "port_msgs/Odom.h"
 
 using namespace ax;
 
@@ -55,10 +56,33 @@ void test_wheel_state()
     }
 }
 
+void test_odom()
+{
+    Odom msg;
+    msg.stamp = ros::Time(1.234);
+    msg.twist_linear_x = 1;
+    msg.twist_linear_y = 2;
+    msg.twist_angular = 3;
+
+    std::vector<char> buffer;
+    to_buffer(msg, "AB", buffer);
+    print_buffer(&buffer[0], buffer.size());
+
+    Odom msg2;
+    if (from_buffer(msg2, "AB", &buffer[0], buffer.size()))
+    {
+        std::cout << msg2.stamp.sec << " " << msg2.stamp.nsec << std::endl;
+        std::cout << msg2.twist_linear_x << std::endl;
+        std::cout << msg2.twist_linear_y << std::endl;
+        std::cout << msg2.twist_angular << std::endl;
+    }
+}
+
 int main()
 {
-    test_custom_msg();
-    test_wheel_state();
+    // test_custom_msg();
+    test_odom();
+    // test_wheel_state();
 
     return 0;
 }

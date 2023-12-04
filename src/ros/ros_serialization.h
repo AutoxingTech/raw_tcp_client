@@ -39,32 +39,9 @@
 #include <boost/mpl/or.hpp>
 #include <boost/mpl/not.hpp>
 
+#include "time.h"
+
 #define ROS_FORCE_INLINE inline
-
-namespace ros
-{
-/**
- * \brief Base class for all exceptions thrown by ROS
- */
-class Exception : public std::runtime_error
-{
-public:
-    Exception(const std::string& what) : std::runtime_error(what) {}
-};
-
-class Time
-{
-public:
-    uint32_t sec;
-    uint32_t nsec;
-};
-class Duration
-{
-public:
-    uint32_t sec;
-    uint32_t nsec;
-};
-} // namespace ros
 
 namespace ros
 {
