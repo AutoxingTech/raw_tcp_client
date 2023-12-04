@@ -7,6 +7,8 @@ namespace ax
 class WheelState
 {
 public:
+    constexpr static char magic_header[2] = {'A', '3'};
+
     WheelControlEnableState enable_state;
     std::string wheel_error_msg;
 };

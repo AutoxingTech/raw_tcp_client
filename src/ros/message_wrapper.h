@@ -38,15 +38,15 @@ struct __attribute__((packed)) WrapperHeader
 };
 
 template <typename MessageType>
-void to_buffer(const MessageType& msg, const char* header, std::vector<char>& buffer)
+void to_buffer(const MessageType& msg, std::vector<char>& buffer)
 {
     uint32_t msg_length = ros::serialization::serializationLength(msg);
     size_t old_size = buffer.size();
     buffer.resize(old_size + 8 + msg_length);
 
     WrapperHeader wrapper_header;
-    wrapper_header.magic[0] = header[0];
-    wrapper_header.magic[1] = header[1];
+    wrapper_header.magic[0] = MessageType::magic_header[0];
+    wrapper_header.magic[1] = MessageType::magic_header[1];
     wrapper_header.data_length = msg_length;
 
     ros::serialization::OStream stream((uint8_t*)&buffer[old_size + 8], msg_length);
@@ -57,9 +57,9 @@ void to_buffer(const MessageType& msg, const char* header, std::vector<char>& bu
 }
 
 template <typename MessageType>
-bool from_buffer(MessageType& msg, const char* header, const char* buffer, size_t buffer_size)
+bool from_buffer(MessageType& msg, const char* buffer, size_t buffer_size)
 {
-    if (buffer[0] != header[0] || buffer[1] != header[1])
+    if (buffer[0] != MessageType::magic_header[0] || buffer[1] != MessageType::magic_header[1])
     {
         printf("1\n");
         return false;

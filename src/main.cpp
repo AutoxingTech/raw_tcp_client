@@ -26,12 +26,12 @@ void test_custom_msg()
     msg.msgs[1] = CustomMsg("bbbbbbbb", 0.1, 0.2, 5 * M_PI / 180);
 
     std::vector<char> buffer;
-    to_buffer(msg, "AB", buffer);
+    to_buffer(msg, buffer);
 
     print_buffer(&buffer[0], buffer.size());
 
     CustomMsgArray msg2;
-    if (from_buffer(msg2, "AB", &buffer[0], buffer.size()))
+    if (from_buffer(msg2, &buffer[0], buffer.size()))
     {
         std::cout << msg2.msgs[0] << std::endl;
         std::cout << msg2.msgs[1] << std::endl;
@@ -45,11 +45,11 @@ void test_wheel_state()
     msg.wheel_error_msg = "abc";
 
     std::vector<char> buffer;
-    to_buffer(msg, "AB", buffer);
+    to_buffer(msg, buffer);
     print_buffer(&buffer[0], buffer.size());
 
     WheelState msg2;
-    if (from_buffer(msg2, "AB", &buffer[0], buffer.size()))
+    if (from_buffer(msg2, &buffer[0], buffer.size()))
     {
         std::cout << msg2.enable_state << std::endl;
         std::cout << msg2.wheel_error_msg << std::endl;
@@ -65,11 +65,11 @@ void test_odom()
     msg.twist_angular = 3;
 
     std::vector<char> buffer;
-    to_buffer(msg, "AB", buffer);
+    to_buffer(msg, buffer);
     print_buffer(&buffer[0], buffer.size());
 
     Odom msg2;
-    if (from_buffer(msg2, "AB", &buffer[0], buffer.size()))
+    if (from_buffer(msg2, &buffer[0], buffer.size()))
     {
         std::cout << msg2.stamp.sec << " " << msg2.stamp.nsec << std::endl;
         std::cout << msg2.twist_linear_x << std::endl;

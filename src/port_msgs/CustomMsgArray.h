@@ -29,6 +29,8 @@ public:
 class CustomMsgArray
 {
 public:
+    constexpr static char magic_header[2] = {'B', '2'};
+
     std::array<CustomMsg, 2> msgs;
     std::vector<CustomMsg> msgs_vector;
 };

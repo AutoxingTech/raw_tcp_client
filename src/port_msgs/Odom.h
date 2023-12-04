@@ -6,6 +6,8 @@ namespace ax
 class Odom
 {
 public:
+    constexpr static char magic_header[2] = {'A', 'B'};
+
     ros::Time stamp;
     float twist_linear_x;
     float twist_linear_y;
