@@ -1,12 +1,14 @@
-#include "ros_serialization.h"
+#include "../ros/ros_serialization.h"
+#include "WheelControlEnableState.h"
 #include <string>
 
 namespace ax
 {
-class Vector3
+class WheelState
 {
 public:
-    double x, y, z;
+    WheelControlEnableState enable_state;
+    std::string wheel_error_msg;
 };
 } // namespace ax
 
@@ -16,7 +18,7 @@ namespace ros
 namespace message_traits
 {
 template <>
-struct IsFixedSize<ax::Vector3> : public TrueType
+struct IsFixedSize<ax::WheelState> : public TrueType
 {
 };
 } // namespace message_traits
@@ -24,14 +26,13 @@ struct IsFixedSize<ax::Vector3> : public TrueType
 namespace serialization
 {
 template <>
-struct Serializer<ax::Vector3>
+struct Serializer<ax::WheelState>
 {
     template <typename Stream, typename T>
     inline static void allInOne(Stream& stream, T m)
     {
-        stream.next(m.x);
-        stream.next(m.y);
-        stream.next(m.z);
+        stream.next(m.enable_state);
+        stream.next(m.wheel_error_msg);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER

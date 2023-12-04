@@ -1,31 +1,37 @@
-#include "ros_serialization.h"
+#include "../ros/ros_serialization.h"
 #include <string>
 
 namespace ax
 {
-class Header
+class Vector3
 {
 public:
-    uint32_t seq;
-    ros::Time stamp;
-    std::string frame_id;
+    double x, y, z;
 };
 } // namespace ax
 
 //////////////////////////////////////////////////////////////////////////////
 namespace ros
 {
+namespace message_traits
+{
+template <>
+struct IsFixedSize<ax::Vector3> : public TrueType
+{
+};
+} // namespace message_traits
+
 namespace serialization
 {
 template <>
-struct Serializer<ax::Header>
+struct Serializer<ax::Vector3>
 {
     template <typename Stream, typename T>
     inline static void allInOne(Stream& stream, T m)
     {
-        stream.next(m.seq);
-        stream.next(m.stamp);
-        stream.next(m.frame_id);
+        stream.next(m.x);
+        stream.next(m.y);
+        stream.next(m.z);
     }
 
     ROS_DECLARE_ALLINONE_SERIALIZER
