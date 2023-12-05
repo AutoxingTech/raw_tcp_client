@@ -1,5 +1,8 @@
 #include <cstdint>
 #include <limits>
+#include <string>
+#include <cmath>
+#include <stdexcept>
 
 namespace ros
 {

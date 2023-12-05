@@ -5,7 +5,9 @@ include_directories(include src)
 
 file(GLOB SRC_FILES
   src/main.cpp
-  # src/laser_converter.cpp
+  src/packet/tcp_pack.cpp
+  src/packet/tcp_stream.cpp
+  src/packet/crc.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})
