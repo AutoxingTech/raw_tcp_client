@@ -7,7 +7,6 @@ file(GLOB SRC_FILES
   src/main.cpp
   src/packet/tcp_pack.cpp
   src/packet/tcp_stream.cpp
-  src/packet/crc.cpp
   src/ros/time.cpp
 )
 

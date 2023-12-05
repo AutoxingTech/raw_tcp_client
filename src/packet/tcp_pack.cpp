@@ -1,5 +1,5 @@
 #include "packet/tcp_pack.h"
-#include "packet/crc.h"
+#include "../shared/crc.h"
 #include <cstdio>
 
 ParserResult MsgPackParser::feed(const uint8_t* bytes, size_t n, size_t* bytesUsed)
