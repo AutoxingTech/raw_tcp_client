@@ -8,6 +8,7 @@ file(GLOB SRC_FILES
   src/packet/tcp_pack.cpp
   src/packet/tcp_stream.cpp
   src/packet/crc.cpp
+  src/ros/time.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SRC_FILES})

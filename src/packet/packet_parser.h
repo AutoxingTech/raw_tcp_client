@@ -92,7 +92,7 @@ public:
                     {
                         if (pos < minPos)
                         {
-                            // m_time = ros::Time::now(); // todo
+                            m_time = ros::Time::now();
                             minPos = pos;
                             m_currentParser = parser;
                         }
