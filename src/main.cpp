@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <unistd.h>
 
 #include "ros/message_wrapper.h"
 
@@ -59,10 +60,10 @@ void test_wheel_state()
 void test_odom()
 {
     Odom msg;
-    msg.stamp = ros::Time(1.234);
-    msg.twist_linear_x = 1;
-    msg.twist_linear_y = 2;
-    msg.twist_angular = 3;
+    msg.stamp = ros::Time(1701769169.12340);
+    msg.twist_linear_x = 1.123;
+    msg.twist_linear_y = -2.345;
+    msg.twist_angular = 3.14;
 
     std::vector<char> buffer;
     to_buffer(msg, buffer);
@@ -80,9 +81,31 @@ void test_odom()
 
 int main()
 {
+    // Big    Endian: 01 23 45 67
+    // Little Endian: 67 45 23 01
+    int value = 0x01234567;
+    print_buffer(&value, sizeof(int));
+
     // test_custom_msg();
     test_odom();
     // test_wheel_state();
+
+    // send odom to server for test
+    // Odom msg;
+    // std::vector<char> buffer;
+    // for (int i = 0; i < INT32_MAX; i++)
+    // {
+    //     msg.stamp = ros::Time::now();
+    //     msg.twist_linear_x = i % 8 * 0.1;
+    //     msg.twist_linear_y = i % 8 * -0.1;
+    //     msg.twist_angular = i % 3;
+
+    //     to_buffer(msg, buffer);
+    //     // send
+
+    //     buffer.clear();
+    //     sleep(1);
+    // }
 
     return 0;
 }
