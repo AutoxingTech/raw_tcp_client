@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../ros/ros_serialization.h"
 #include "WheelControlEnableState.h"
 #include <string>

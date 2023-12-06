@@ -7,6 +7,8 @@
 #include "port_msgs/CustomMsgArray.h"
 #include "port_msgs/WheelState.h"
 #include "port_msgs/Odom.h"
+#include "port_msgs/WheelEnable.h"
+#include "port_msgs/DeviceState.h"
 
 using namespace ax;
 
@@ -79,6 +81,33 @@ void test_odom()
     }
 }
 
+void test_wheel_enable()
+{
+    WheelEnable msg;
+    msg.enable_state = true;
+
+    std::vector<char> buffer;
+    to_buffer(msg, buffer);
+    print_buffer(&buffer[0], buffer.size());
+}
+
+void test_device_state()
+{
+    DeviceState msg;
+    msg.left_code = 1;
+    msg.left_current = 2;
+    msg.left_voltage = 3;
+    msg.left_temperature = 4;
+    msg.right_code = 5;
+    msg.right_current = 6;
+    msg.right_voltage = 7;
+    msg.right_temperature = 8;
+
+    std::vector<char> buffer;
+    to_buffer(msg, buffer);
+    print_buffer(&buffer[0], buffer.size());
+}
+
 void test_send()
 {
     // send odom to server for test
@@ -107,8 +136,10 @@ int main()
     print_buffer(&value, sizeof(int));
 
     // test_custom_msg();
-    test_odom();
+    // test_odom();
     // test_wheel_state();
+    test_wheel_enable();
+    // test_device_state();
 
     return 0;
 }
