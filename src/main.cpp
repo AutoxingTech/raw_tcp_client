@@ -7,7 +7,8 @@
 #include "port_msgs/CustomMsgArray.h"
 #include "port_msgs/WheelState.h"
 #include "port_msgs/Odom.h"
-#include "port_msgs/WheelEnable.h"
+#include "port_msgs/TcpRobotControl.h"
+#include "port_msgs/TcpRobotState.h"
 #include "port_msgs/DeviceState.h"
 
 using namespace ax;
@@ -83,8 +84,20 @@ void test_odom()
 
 void test_wheel_enable()
 {
-    WheelEnable msg;
-    msg.enable_state = true;
+    TcpRobotControl msg;
+    msg.enable_wheels = true;
+
+    std::vector<char> buffer;
+    to_buffer(msg, buffer);
+    print_buffer(&buffer[0], buffer.size());
+}
+
+void test_robot_state()
+{
+    TcpRobotState msg;
+    msg.wheels_enabled = true;
+    msg.battery_percent = 20;
+    msg.is_charge = false;
 
     std::vector<char> buffer;
     to_buffer(msg, buffer);
@@ -136,10 +149,11 @@ int main()
     print_buffer(&value, sizeof(int));
 
     // test_custom_msg();
-    // test_odom();
+    test_odom();
     // test_wheel_state();
-    test_wheel_enable();
+    // test_wheel_enable();
     // test_device_state();
+    // test_robot_state();
 
     return 0;
 }
