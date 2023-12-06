@@ -79,6 +79,26 @@ void test_odom()
     }
 }
 
+void test_send()
+{
+    // send odom to server for test
+    Odom msg;
+    std::vector<char> buffer;
+    for (int i = 0; i < INT32_MAX; i++)
+    {
+        msg.stamp = ros::Time::now();
+        msg.twist_linear_x = i % 8 * 0.1;
+        msg.twist_linear_y = i % 8 * -0.1;
+        msg.twist_angular = i % 3;
+
+        to_buffer(msg, buffer);
+        // send
+
+        buffer.clear();
+        sleep(1);
+    }
+}
+
 int main()
 {
     // Big    Endian: 01 23 45 67
@@ -89,23 +109,6 @@ int main()
     // test_custom_msg();
     test_odom();
     // test_wheel_state();
-
-    // send odom to server for test
-    // Odom msg;
-    // std::vector<char> buffer;
-    // for (int i = 0; i < INT32_MAX; i++)
-    // {
-    //     msg.stamp = ros::Time::now();
-    //     msg.twist_linear_x = i % 8 * 0.1;
-    //     msg.twist_linear_y = i % 8 * -0.1;
-    //     msg.twist_angular = i % 3;
-
-    //     to_buffer(msg, buffer);
-    //     // send
-
-    //     buffer.clear();
-    //     sleep(1);
-    // }
 
     return 0;
 }
