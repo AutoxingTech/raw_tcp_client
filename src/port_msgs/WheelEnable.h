@@ -1,15 +1,14 @@
 #pragma once
 
 #include "../ros/ros_serialization.h"
-#include "WheelControlEnableState.h"
 
 namespace ax
 {
 class WheelEnable
 {
 public:
-    constexpr static char magic_header[2] = {'W', 'E'};
-    WheelControlEnableState enable_state;
+    constexpr static char magic_header[2]{(char)0xba, (char)0xe1};
+    bool enable_state;
 };
 } // namespace ax
 
