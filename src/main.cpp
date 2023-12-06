@@ -7,6 +7,7 @@
 #include "port_msgs/CustomMsgArray.h"
 #include "port_msgs/WheelState.h"
 #include "port_msgs/Odom.h"
+#include "port_msgs/WheelEnable.h"
 
 using namespace ax;
 
@@ -79,6 +80,15 @@ void test_odom()
     }
 }
 
+void test_wheel_enable()
+{
+    WheelEnable msg;
+    msg.enable_state = WheelControlEnableState::ENABLED;
+    std::vector<char> buffer;
+    to_buffer(msg, buffer);
+    print_buffer(&buffer[0], buffer.size());
+}
+
 void test_send()
 {
     // send odom to server for test
@@ -109,6 +119,7 @@ int main()
     // test_custom_msg();
     test_odom();
     // test_wheel_state();
+    // test_wheel_enable();
 
     return 0;
 }
