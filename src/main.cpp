@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <unistd.h>
+#include <memory>
 
 #include "ros/message_wrapper.h"
 
@@ -10,6 +11,7 @@
 #include "port_msgs/TcpRobotControl.h"
 #include "port_msgs/TcpRobotState.h"
 #include "port_msgs/DeviceState.h"
+#include "packet/tcp_stream.h"
 
 using namespace ax;
 
@@ -123,6 +125,21 @@ void test_device_state()
 
 void test_send()
 {
+    std::string m_hostIP = "127.0.0.1";
+    int m_hostPort = 8091;
+    std::shared_ptr<TcpStream> m_comStream = std::make_shared<TcpStream>();
+    while (true)
+    {
+        if (!m_comStream->open(m_hostIP, m_hostPort))
+        {
+            sleep(1);
+        }
+        else
+        {
+            break;
+        }
+    }
+
     // send odom to server for test
     Odom msg;
     std::vector<char> buffer;
@@ -135,25 +152,78 @@ void test_send()
 
         to_buffer(msg, buffer);
         // send
+        int sizeOut = m_comStream->write((uint8_t*)(&buffer[0]), buffer.size());
+        if (sizeOut <= 0)
+        {
+            printf("write length is %d\n", sizeOut);
+        }
 
         buffer.clear();
         sleep(1);
     }
 }
 
-int main()
+void test_recv()
+{
+    std::string m_hostIP = "127.0.0.1";
+    int m_hostPort = 8091;
+    std::shared_ptr<TcpStream> m_comStream = std::make_shared<TcpStream>();
+    while (true)
+    {
+        if (!m_comStream->open(m_hostIP, m_hostPort))
+        {
+            sleep(1);
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    // recv odom from server for test
+    Odom msg;
+    char buffer[4096];
+    for (int i = 0; i < INT32_MAX; i++)
+    {
+        buffer[0] = 0;
+        int sizeOut = m_comStream->read((uint8_t*)buffer, 4096);
+        if (sizeOut <= 0)
+        {
+            printf("write length is %d\n", sizeOut);
+        }
+
+        if (from_buffer(msg, buffer, 4096))
+        {
+            printf("recv twist_linear_x: %lf, twist_linear_y: %lf, twist_angular: %lf\n", msg.twist_linear_x,
+                   msg.twist_linear_y, msg.twist_angular);
+        }
+        else
+        {
+            printf("from_buffer failed...");
+        }
+
+        sleep(1);
+    }
+}
+
+void test_endian()
 {
     // Big    Endian: 01 23 45 67
     // Little Endian: 67 45 23 01
     int value = 0x01234567;
     print_buffer(&value, sizeof(int));
+}
 
+int main()
+{
     // test_custom_msg();
-    test_odom();
+    // test_odom();
     // test_wheel_state();
     // test_wheel_enable();
     // test_device_state();
     // test_robot_state();
+
+    test_recv();
 
     return 0;
 }
